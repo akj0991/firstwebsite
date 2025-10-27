@@ -29,6 +29,27 @@
             display: block;
         }
 
+        .home-link {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 48px;
+            height: 48px;
+            background: #000000;
+            display: block;
+            border-radius: 4px;
+            text-indent: -9999px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .home-link:focus-visible,
+        .home-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
         .instructions {
             position: absolute;
             top: 16px;
@@ -43,6 +64,7 @@
     </style>
 </head>
 <body>
+    <a class="home-link" href="index.html" aria-label="Return to the falling leaves scene">Back</a>
     <div class="instructions">Click anywhere to bring a cell to life.</div>
     <canvas id="life-canvas" width="600" height="600" aria-label="Game of Life grid" role="img"></canvas>
     <script src="game-of-life.js"></script>
