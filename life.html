@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conway's Game of Life</title>
+    <style>
+        :root {
+            color-scheme: only light;
+        }
+
+        body {
+            margin: 0;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: system-ui, sans-serif;
+            touch-action: none;
+        }
+
+        canvas {
+            width: 90vmin;
+            height: 90vmin;
+            max-width: min(95vw, 800px);
+            max-height: min(95vh, 800px);
+            background: #ffffff;
+            display: block;
+        }
+
+        .instructions {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="instructions">Click anywhere to bring a cell to life.</div>
+    <canvas id="life-canvas" width="600" height="600" aria-label="Game of Life grid" role="img"></canvas>
+    <script src="game-of-life.js"></script>
+</body>
+</html>
