@@ -9,7 +9,7 @@ const COLORS = {
     sunsetBottom: '#d88956'
 };
 
-const LEAF_PALETTE = ['#e07a5f', '#f4a259', '#d97b29', '#c35a27', '#df6f3a'];
+const LEAF_PALETTE = ['#d97b29', '#c35a27'];
 
 const pointer = {
     x: window.innerWidth / 2,
@@ -138,7 +138,7 @@ function createLeaf() {
         swayOmega: (2 * Math.PI) / 3,
         swayPhase: Math.random() * Math.PI * 2,
         startTime: performance.now(),
-        vx0: pointer.vx,
+        vx0: pointer.vx * 0.2,
         terminalVelocity: 160 + Math.random() * 70,
         vy: 0,
         settled: false
@@ -159,6 +159,8 @@ function updateLeaves(dt, time) {
     for (let i = 0; i < leaves.length; i += 1) {
         const leaf = leaves[i];
 
+        const angle = leaf.swayOmega * ((time - leaf.startTime) / 1000) + leaf.swayPhase;
+
         if (!leaf.settled) {
             leaf.vy += (leaf.terminalVelocity - leaf.vy) * (dt / tau);
             const maxFall = bottom - leaf.radius;
@@ -169,12 +171,14 @@ function updateLeaves(dt, time) {
 
             if (leaf.y >= maxFall) {
                 leaf.y = maxFall;
+                const swayOffsetBeforeLanding = leaf.swayAmplitude * Math.sin(angle);
+                leaf.baseX += swayOffsetBeforeLanding;
                 leaf.settled = true;
                 leaf.swayAmplitude = 0;
             }
         }
 
-        const swayOffset = leaf.swayAmplitude * Math.sin(leaf.swayOmega * ((time - leaf.startTime) / 1000) + leaf.swayPhase);
+        const swayOffset = leaf.swayAmplitude * Math.sin(angle);
         const x = leaf.baseX + swayOffset;
         leaf.el.style.transform = `translate3d(${x - leaf.radius}px, ${leaf.y - leaf.radius}px, 0)`;
     }
