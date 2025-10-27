@@ -1,4 +1,6 @@
 const canvas = document.getElementById('life-canvas');
+const instructions = document.querySelector('.instructions');
+const INSTRUCTIONS_TEXT = 'Click anywhere to bring a cell to life.';
 const ctx = canvas.getContext('2d');
 
 const ALIVE_COLOR = '#9be7a3';
@@ -11,6 +13,7 @@ let cellSize = 20;
 let grid = [];
 let buffer = [];
 let lastTimestamp = 0;
+let isPaused = false;
 
 function resizeGrid() {
     const size = Math.min(window.innerWidth, window.innerHeight) * 0.9;
@@ -84,11 +87,27 @@ function step() {
 }
 
 function animationLoop(timestamp) {
-    if (timestamp - lastTimestamp >= STEP_INTERVAL) {
+    if (!isPaused && timestamp - lastTimestamp >= STEP_INTERVAL) {
         step();
         lastTimestamp = timestamp;
     }
     requestAnimationFrame(animationLoop);
+}
+
+function setPaused(paused) {
+    isPaused = paused;
+    if (!instructions) {
+        return;
+    }
+    if (paused) {
+        instructions.innerHTML = `${INSTRUCTIONS_TEXT}<br>Paused`;
+    } else {
+        instructions.innerHTML = INSTRUCTIONS_TEXT;
+    }
+}
+
+function togglePause() {
+    setPaused(!isPaused);
 }
 
 function activateCell(event) {
@@ -97,14 +116,30 @@ function activateCell(event) {
     const y = Math.floor(((event.clientY - rect.top) / rect.height) * canvas.height / cellSize);
 
     if (x >= 0 && x < columns && y >= 0 && y < rows) {
-        grid[y][x] = true;
+        if (isPaused) {
+            grid[y][x] = !grid[y][x];
+        } else {
+            grid[y][x] = true;
+        }
         drawGrid();
     }
 }
 
 canvas.addEventListener('click', activateCell);
 canvas.addEventListener('pointerdown', (event) => {
-    activateCell(event);
+    if (event.pointerType !== 'mouse') {
+        activateCell(event);
+    }
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.code === 'Space') {
+        event.preventDefault();
+        togglePause();
+        if (!isPaused) {
+            lastTimestamp = performance.now();
+        }
+    }
 });
 
 window.addEventListener('resize', () => {
@@ -112,4 +147,5 @@ window.addEventListener('resize', () => {
 });
 
 resizeGrid();
+setPaused(false);
 requestAnimationFrame(animationLoop);
